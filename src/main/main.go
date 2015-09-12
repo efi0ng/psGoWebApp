@@ -27,7 +27,11 @@ const doc = `
 <html>
 	<head><title>Example Title</title></head>
 	<body>
-		<h1>Hello {{.Message}}</h1>
+		{{if eq .Path "/Google"}}
+			<h1>Hey, Google made Go!</h1>
+		{{else}} 
+			<h1>Hola {{.Message}}!</h1>
+		{{end}}
 		<p>You tried to access {{.Path}}</p>
 		<p>{{.Knowledge}}</p>
 	</body>
