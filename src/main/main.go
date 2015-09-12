@@ -1,8 +1,9 @@
 package main
 
 import (
-	"io/ioutil"
+	"bufio"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -25,7 +26,7 @@ func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		path = "public/" + req.URL.Path
 	}
 
-	data, err := ioutil.ReadFile(string(path))
+	f, err := os.Open(path)
 
 	if err != nil {
 		w.WriteHeader(404)
@@ -33,6 +34,7 @@ func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	bufferedReader := bufio.NewReader(f)
 	var contentType string
 
 	if strings.HasSuffix(path, ".css") {
@@ -48,7 +50,7 @@ func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	} else {
 		contentType = "text/plain"
 	}
-	
+
 	w.Header().Add("Content-Type", contentType)
-	w.Write(data)
+	bufferedReader.WriteTo(w)
 }
