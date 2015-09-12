@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"text/template"
+	"time"
 )
 
 func main() {
@@ -13,7 +15,8 @@ func main() {
 			return
 		}
 
-		tmpl.Execute(w, req.URL.Path)
+		context := Context{"Reader", req.URL.Path}
+		tmpl.Execute(w, context)
 	})
 
 	http.ListenAndServe(":8000", nil)
@@ -24,7 +27,18 @@ const doc = `
 <html>
 	<head><title>Example Title</title></head>
 	<body>
-		<h1>Hello {{.}}</h1>
+		<h1>Hello {{.Message}}</h1>
+		<p>You tried to access {{.Path}}</p>
+		<p>{{.Knowledge}}</p>
 	</body>
 </html>
 `
+
+type Context struct {
+	Message string
+	Path    string
+}
+
+func (this Context) Knowledge() string {
+	return fmt.Sprint("Wise wisdom", time.Now)
+}
