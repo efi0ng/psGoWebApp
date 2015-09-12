@@ -15,7 +15,12 @@ func main() {
 			return
 		}
 
-		context := Context{"Reader", req.URL.Path}
+		context := Context{
+			"Fruit Store Galore",
+			"Jake Jones",
+			req.URL.Path,
+			[3]string{"Lemon", "Orange", "Apple"},
+		}
 		tmpl.Execute(w, context)
 	})
 
@@ -25,24 +30,32 @@ func main() {
 const doc = `
 <!DOCTYPE html>
 <html>
-	<head><title>Example Title</title></head>
+	<head><title>{{.Title}}</title></head>
 	<body>
 		{{if eq .Path "/Google"}}
 			<h1>Hey, Google made Go!</h1>
 		{{else}} 
 			<h1>Hola {{.Message}}!</h1>
 		{{end}}
-		<p>You tried to access {{.Path}}</p>
-		<p>{{.Knowledge}}</p>
+		<p>You have reached {{.Path}}. {{.Knowledge "hope"}}</p>
+		<ul>
+		{{range .Fruit}}
+		  <li>{{.}}</li>
+		{{else}}
+			<li>No fruit found?</li>
+		{{end}}
+		</ul>
 	</body>
 </html>
 `
 
 type Context struct {
+	Title   string
 	Message string
 	Path    string
+	Fruit   [3]string
 }
 
-func (this Context) Knowledge() string {
-	return fmt.Sprint("Wise wisdom", time.Now)
+func (this Context) Knowledge(tidbit string) string {
+	return fmt.Sprint("Wise wisdom (", tidbit, ") at ", time.Now().Format(time.UnixDate))
 }
