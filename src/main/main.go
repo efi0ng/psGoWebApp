@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func main() {
@@ -16,7 +17,14 @@ type MyHandler struct {
 }
 
 func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	path := "public/" + req.URL.Path
+	var path string
+
+	if req.URL.Path == "/" {
+		path = "public/html/home.html"
+	} else {
+		path = "public/" + req.URL.Path
+	}
+
 	data, err := ioutil.ReadFile(string(path))
 
 	if err != nil {
@@ -25,5 +33,22 @@ func (this *MyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	var contentType string
+
+	if strings.HasSuffix(path, ".css") {
+		contentType = "text/css"
+	} else if strings.HasSuffix(path, ".html") {
+		contentType = "text/html"
+	} else if strings.HasSuffix(path, ".js") {
+		contentType = "application/javascript"
+	} else if strings.HasSuffix(path, ".png") {
+		contentType = "image/png"
+	} else if strings.HasSuffix(path, ".mp4") {
+		contentType = "video/mpeg"
+	} else {
+		contentType = "text/plain"
+	}
+	
+	w.Header().Add("Content-Type", contentType)
 	w.Write(data)
 }
