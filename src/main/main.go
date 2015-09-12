@@ -10,7 +10,19 @@ import (
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
-		tmpl, err := template.New("test").Parse(doc)
+		container := template.New("container")
+
+		_, err := container.New("main").Parse(doc)
+		if err != nil {
+			return
+		}
+
+		_, err = container.New("header").Parse(header)
+		if err != nil {
+			return
+		}
+
+		_, err = container.New("footer").Parse(footer)
 		if err != nil {
 			return
 		}
@@ -19,18 +31,16 @@ func main() {
 			"Fruit Store Galore",
 			"Jake Jones",
 			req.URL.Path,
-			[3]string{"Lemon", "Orange", "Apple"},
+			[4]string{"Lemon", "Orange", "Apple", "Pear"},
 		}
-		tmpl.Execute(w, context)
+		container.Lookup("main").Execute(w, context)
 	})
 
 	http.ListenAndServe(":8000", nil)
 }
 
 const doc = `
-<!DOCTYPE html>
-<html>
-	<head><title>{{.Title}}</title></head>
+{{template "header" .Title}}
 	<body>
 		{{if eq .Path "/Google"}}
 			<h1>Hey, Google made Go!</h1>
@@ -46,6 +56,16 @@ const doc = `
 		{{end}}
 		</ul>
 	</body>
+{{template "footer"}}
+`
+
+const header = `
+<!DOCTYPE html>
+<html>
+	<head><title>{{.}}</title></head>
+`
+
+const footer = `
 </html>
 `
 
@@ -53,7 +73,7 @@ type Context struct {
 	Title   string
 	Message string
 	Path    string
-	Fruit   [3]string
+	Fruit   [4]string
 }
 
 func (this Context) Knowledge(tidbit string) string {
