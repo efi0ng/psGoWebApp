@@ -12,18 +12,24 @@ import (
 	"time"
 )
 
+type History struct {
+	Visited []string
+}
+
+type MatchedFile struct {
+	Name     string
+	FileInfo os.FileInfo
+}
+
 const (
 	player          = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName = "vidpicker.history"
 )
 
 var (
-	fileTypes = []string{".mp4", ".avi", ".mov", ".wmv", ".flv", ".mkv", ".mpg", ".m4v"}
+	fileTypes   = []string{".mp4", ".avi", ".mov", ".wmv", ".flv", ".mkv", ".mpg", ".m4v"}
+	endOfStream = MatchedFile{}
 )
-
-type History struct {
-	Visited []string
-}
 
 func main() {
 	pattern := processArgs()
@@ -47,15 +53,15 @@ func main() {
 	}
 
 	// go find files
-	foundChan := make(chan string)
+	foundChan := make(chan MatchedFile)
 
 	go walkFiles(".", foundChan)
 
-	filterChan := make(chan string)
+	filterChan := make(chan MatchedFile)
 
 	go filterFilesByPattern(foundChan, pattern, filterChan)
 
-	historyChan := make(chan string)
+	historyChan := make(chan MatchedFile)
 
 	go filterByHistory(filterChan, history, historyChan)
 
@@ -64,8 +70,8 @@ func main() {
 	// collect results
 	selection := []string{}
 
-	for file := <-finalChan; file != ""; file = <-finalChan {
-		selection = append(selection, file)
+	for file := <-finalChan; file != endOfStream; file = <-finalChan {
+		selection = append(selection, file.Name)
 		//TODO: Add a cmdline flag to print the found files
 		//fmt.Println(file)
 	}
@@ -128,40 +134,39 @@ func processArgs() string {
 	return pattern
 }
 
-func filterByHistory(in chan string, history History, out chan string) {
-	for file := <-in; file != ""; file = <-in {
-		if !Contains(history.Visited, file) {
+func filterByHistory(in chan MatchedFile, history History, out chan MatchedFile) {
+	for file := <-in; file != endOfStream; file = <-in {
+		if !Contains(history.Visited, file.Name) {
 			out <- file
 		}
 	}
 
-	out <- ""
+	out <- endOfStream
 }
 
-func filterFilesByPattern(in chan string, pattern string, out chan string) {
-	for file := <-in; file != ""; file = <-in {
-		name := filepath.Base(file)
+func filterFilesByPattern(in chan MatchedFile, pattern string, out chan MatchedFile) {
+	for file := <-in; file != endOfStream; file = <-in {
+		name := filepath.Base(file.Name)
 		if matched, _ := filepath.Match(pattern, name); matched {
 			out <- file
 		}
 	}
 
-	out <- ""
+	out <- endOfStream
 }
 
-func walkFiles(dir string, out chan string) {
+func walkFiles(dir string, out chan MatchedFile) {
 	filepath.Walk(dir, func(path string, info os.FileInfo, innerErr error) error {
 		if innerErr != nil {
 			return nil
 		}
 
 		if Contains(fileTypes, filepath.Ext(path)) {
-			out <- path
+			out <- MatchedFile{path, info}
 		}
 
 		return nil
 	})
 
-	// send end of stream signal
-	out <- ""
+	out <- endOfStream
 }
