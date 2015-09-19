@@ -140,8 +140,8 @@ func Contains(slice []string, value string) bool {
 
 func processArgs() Options {
 	options := Options{}
-	maxDaysOld := flag.Int("maxd", 0, "Maximum days old")
-	minDaysOld := flag.Int("mind", 0, "Minimum days old")
+	maxDaysOld := flag.Int("o", 0, "Oldest modified file to consider (days)")
+	minDaysOld := flag.Int("n", 0, "Newest modified file to consider (days)")
 	printFound := flag.Bool("l", false, "List files found")
 
 	flag.Parse()
