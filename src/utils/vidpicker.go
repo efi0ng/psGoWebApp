@@ -192,8 +192,8 @@ func filterFilesByPattern(in chan MatchedFile, pattern string, out chan MatchedF
 }
 
 func filterFilesByDate(in chan MatchedFile, minDaysOld int, maxDaysOld int, out chan MatchedFile) {
-	minFileTime := calculateTimeDaysAgo(minDaysOld)
-	maxFileTime := calculateTimeDaysAgo(maxDaysOld)
+	minFileTime := time.Now().AddDate(0, 0, -minDaysOld)
+	maxFileTime := time.Now().AddDate(0, 0, -maxDaysOld)
 
 	for file := <-in; file != endOfStream; file = <-in {
 		if minDaysOld > 0 && file.FileInfo.ModTime().After(minFileTime) {
@@ -222,8 +222,4 @@ func walkFiles(dir string, out chan MatchedFile) {
 	})
 
 	out <- endOfStream
-}
-
-func calculateTimeDaysAgo(days int) time.Time {
-	return time.Now().AddDate(0, 0, -days)
 }
