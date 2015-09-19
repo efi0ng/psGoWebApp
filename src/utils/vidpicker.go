@@ -3,6 +3,7 @@ package main
 // Directory sweeper
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -21,6 +22,12 @@ type MatchedFile struct {
 	FileInfo os.FileInfo
 }
 
+type Criteria struct {
+	Pattern    string
+	MaxDaysOld int
+	MinDaysOld int
+}
+
 const (
 	player          = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName = "vidpicker.history"
@@ -32,7 +39,7 @@ var (
 )
 
 func main() {
-	pattern := processArgs()
+	criteria := processArgs()
 	history := History{}
 
 	// do we have a history? If so, read it
@@ -59,7 +66,7 @@ func main() {
 
 	filterChan := make(chan MatchedFile)
 
-	go filterFilesByPattern(foundChan, pattern, filterChan)
+	go filterFilesByPattern(foundChan, criteria.Pattern, filterChan)
 
 	historyChan := make(chan MatchedFile)
 
@@ -120,18 +127,28 @@ func Contains(slice []string, value string) bool {
 	return false
 }
 
-func processArgs() string {
-	if len(os.Args) < 2 {
-		return "*"
+func processArgs() Criteria {
+	criteria := Criteria{}
+	maxDaysOld := flag.Int("maxd", 0, "Maximum days old")
+	minDaysOld := flag.Int("mind", 0, "Minimum days old")
+
+	flag.Parse()
+
+	if flag.NArg() < 1 {
+		criteria.Pattern = "*"
+	} else {
+		pattern := flag.Arg(0)
+
+		if !strings.Contains(pattern, "*") {
+			pattern = "*" + pattern + "*"
+		}
+		criteria.Pattern = pattern
 	}
 
-	pattern := os.Args[1]
+	criteria.MaxDaysOld = *maxDaysOld
+	criteria.MinDaysOld = *minDaysOld
 
-	if !strings.Contains(pattern, "*") {
-		pattern = "*" + pattern + "*"
-	}
-
-	return pattern
+	return criteria
 }
 
 func filterByHistory(in chan MatchedFile, history History, out chan MatchedFile) {
