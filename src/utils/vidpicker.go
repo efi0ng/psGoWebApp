@@ -60,33 +60,13 @@ func main() {
 		}
 	}
 
-	// go find files
-	foundChan := make(chan MatchedFile)
-
-	go walkFiles(".", foundChan)
-
-	filterChan := make(chan MatchedFile)
-
-	go filterFilesByPattern(foundChan, options.Pattern, filterChan)
-
-	historyChan := make(chan MatchedFile)
-
-	go filterByHistory(filterChan, history, historyChan)
-
-	var tailChan chan MatchedFile
-
-	if options.MaxDaysOld > 0 || options.MinDaysOld > 0 {
-		dateChan := make(chan MatchedFile)
-		go filterFilesByDate(historyChan, options.MinDaysOld, options.MaxDaysOld, dateChan)
-		tailChan = dateChan
-	} else {
-		tailChan = historyChan
-	}
+	// build filter chain that will find the files
+	outChan := buildFilterChain(options, history)
 
 	// collect results
 	selection := []string{}
 
-	for file := <-tailChan; file != endOfStream; file = <-tailChan {
+	for file := <-outChan; file != endOfStream; file = <-outChan {
 		selection = append(selection, file.Name)
 
 		if options.ListFilesFound {
@@ -126,6 +106,32 @@ func main() {
 	enc := json.NewEncoder(historyFile)
 	enc.Encode(&history)
 	return
+}
+
+func buildFilterChain(options Options, history History) chan MatchedFile {
+	foundChan := make(chan MatchedFile)
+
+	go walkFiles(".", foundChan)
+
+	filterChan := make(chan MatchedFile)
+
+	go filterFilesByPattern(foundChan, options.Pattern, filterChan)
+
+	historyChan := make(chan MatchedFile)
+
+	go filterByHistory(filterChan, history, historyChan)
+
+	var outChan chan MatchedFile
+
+	if options.MaxDaysOld > 0 || options.MinDaysOld > 0 {
+		dateChan := make(chan MatchedFile)
+		go filterFilesByDate(historyChan, options.MinDaysOld, options.MaxDaysOld, dateChan)
+		outChan = dateChan
+	} else {
+		outChan = historyChan
+	}
+
+	return outChan
 }
 
 func Contains(slice []string, value string) bool {
