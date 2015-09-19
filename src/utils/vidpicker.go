@@ -72,12 +72,20 @@ func main() {
 
 	go filterByHistory(filterChan, history, historyChan)
 
-	finalChan := historyChan
+	var tailChan chan MatchedFile
+
+	if criteria.MaxDaysOld > 0 || criteria.MinDaysOld > 0 {
+		dateChan := make(chan MatchedFile)
+		go filterFilesByDate(historyChan, criteria.MinDaysOld, criteria.MaxDaysOld, dateChan)
+		tailChan = dateChan
+	} else {
+		tailChan = historyChan
+	}
 
 	// collect results
 	selection := []string{}
 
-	for file := <-finalChan; file != endOfStream; file = <-finalChan {
+	for file := <-tailChan; file != endOfStream; file = <-tailChan {
 		selection = append(selection, file.Name)
 		//TODO: Add a cmdline flag to print the found files
 		//fmt.Println(file)
@@ -172,6 +180,23 @@ func filterFilesByPattern(in chan MatchedFile, pattern string, out chan MatchedF
 	out <- endOfStream
 }
 
+func filterFilesByDate(in chan MatchedFile, minDaysOld int, maxDaysOld int, out chan MatchedFile) {
+	minFileTime := calculateTimeDaysAgo(minDaysOld)
+	maxFileTime := calculateTimeDaysAgo(maxDaysOld)
+
+	for file := <-in; file != endOfStream; file = <-in {
+		if minDaysOld > 0 && file.FileInfo.ModTime().After(minFileTime) {
+			continue
+		}
+		if maxDaysOld > 0 && file.FileInfo.ModTime().Before(maxFileTime) {
+			continue
+		}
+		out <- file
+	}
+
+	out <- endOfStream
+}
+
 func walkFiles(dir string, out chan MatchedFile) {
 	filepath.Walk(dir, func(path string, info os.FileInfo, innerErr error) error {
 		if innerErr != nil {
@@ -186,4 +211,8 @@ func walkFiles(dir string, out chan MatchedFile) {
 	})
 
 	out <- endOfStream
+}
+
+func calculateTimeDaysAgo(days int) time.Time {
+	return time.Now().AddDate(0, 0, -days)
 }
