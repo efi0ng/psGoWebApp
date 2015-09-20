@@ -6,21 +6,26 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"github.com/gorilla/mux"
 )
 
 func Register(templates *template.Template) {
+	router := mux.NewRouter()
+	
 	// handle templates
 	hc := new(homeController)
 	hc.template = templates.Lookup("home.html")
-	http.HandleFunc("/home", hc.get)
+	router.HandleFunc("/home", hc.get)
 
 	cc := new(categoriesController)
 	cc.template = templates.Lookup("categories.html")
-	http.HandleFunc("/categories", cc.get)
+	router.HandleFunc("/categories", cc.get)
 
 	pc := new(productsController)
 	pc.template = templates.Lookup("products.html")
-	http.HandleFunc("/products", pc.get)
+	router.HandleFunc("/products", pc.get)
+	
+	http.Handle("/",router)
 	
 	// handle resources
 	http.HandleFunc("/img/", serveResource)
