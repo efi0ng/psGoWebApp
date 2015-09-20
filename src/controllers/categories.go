@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"controllers/util"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -16,7 +17,10 @@ func (this *categoriesController) get(w http.ResponseWriter, req *http.Request) 
 	vm := viewmodels.GetCategories()
 
 	w.Header().Add("Content-Type", "text/html")
-	this.template.Execute(w, vm)
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+
+	this.template.Execute(responseWriter, vm)
 }
 
 type categoryController struct {
@@ -36,5 +40,8 @@ func (this *categoryController) get(w http.ResponseWriter, req *http.Request) {
 	vm := viewmodels.GetProducts(id)
 
 	w.Header().Add("Content-Type", "text/html")
-	this.template.Execute(w, vm)
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+
+	this.template.Execute(responseWriter, vm)
 }

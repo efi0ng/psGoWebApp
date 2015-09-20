@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"controllers/util"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -28,7 +29,10 @@ func (this *productController) get(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
-	
+
 	w.Header().Add("Content-Type", "text/html")
-	this.template.Execute(w, vm)
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+
+	this.template.Execute(responseWriter, vm)
 }

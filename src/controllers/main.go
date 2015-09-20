@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bufio"
+	"controllers/util"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
@@ -62,6 +63,10 @@ func serveResource(w http.ResponseWriter, req *http.Request) {
 	defer f.Close()
 	w.Header().Add("Content-Type", contentType)
 
+	// add gzip compression if possible
+	responseWriter := util.GetResponseWriter(w, req)
+	defer responseWriter.Close()
+
 	br := bufio.NewReader(f)
-	br.WriteTo(w)
+	br.WriteTo(responseWriter)
 }
