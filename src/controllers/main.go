@@ -25,6 +25,10 @@ func Register(templates *template.Template) {
 	catController.template = templates.Lookup("products.html")
 	router.HandleFunc("/categories/{id}", catController.get)
 
+	pcController := new(productController)
+	pcController.template = templates.Lookup("product.html")
+	router.HandleFunc("/product/{id}", pcController.get)
+
 	http.Handle("/", router)
 
 	// handle resources
