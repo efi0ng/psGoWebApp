@@ -29,7 +29,7 @@ func GetProducts(id int) Products {
 	result.Title = "Lemonade Stand Society - " + shopName + " Shop"
 
 	if id == 1 {
-		result.Products = GetProductList()
+		result.Products = getProductList()
 	}
 
 	return result
@@ -45,24 +45,27 @@ func GetProduct(id int) (ProductVM, error) {
 	var result ProductVM
 	var err error
 
-	result.Active = "shop"
-	result.Title = "Lemonade Stand Society - Kiwi Juice"
-
-	for _, p := range GetProductList() {
+	var product Product
+	for _, p := range getProductList() {
 		if p.Id == id {
-			result.Product = p
+			product = p
 			break
 		}
 	}
 
-	if result.Product.Id == 0 {
+	if product.Id == 0 {
 		err = errors.New("No such product")
+		return result, err
 	}
+	
+	result.Active = "shop"
+	result.Product = product
+	result.Title = "Lemonade Stand Society - " + result.Product.Name
 	
 	return result, err
 }
 
-func GetProductList() []Product {
+func getProductList() []Product {
 	if productList == nil {
 		lemonJuice := MakeLemonJuiceProduct()
 		appleJuice := MakeAppleJuiceProduct()
