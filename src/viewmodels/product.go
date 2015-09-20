@@ -8,8 +8,8 @@ type Product struct {
 	Name             string
 	DescriptionShort string
 	DescriptionLong  string
-	PricePerLiter    float32
-	PricePer10Liter  float32
+	PricePerLitre    float32
+	PricePer10Litre  float32
 	Origin           string
 	IsOrganic        bool
 	ImageUrl         string
@@ -23,8 +23,8 @@ func MakeLemonJuiceProduct() Product {
 		DescriptionLong: `Made from premium, organic Meyer lemons. These fruit are left on the tree until they reach the peak of ripeness and then juiced within 8 hours of being picked.
 			<br/>
 			Lemonade made from our premium juice is sure to make your stand the most popular in the neighborhood.`,
-		PricePerLiter:   1.09,
-		PricePer10Liter: 1.04,
+		PricePerLitre:   1.09,
+		PricePer10Litre: 1.04,
 		Origin:          "California",
 		IsOrganic:       true,
 		ImageUrl:        "lemon.png",
@@ -39,8 +39,8 @@ func MakeAppleJuiceProduct() Product {
 		Name:             "Apple Juice",
 		DescriptionShort: "The perfect blend of Washington apples.",
 		DescriptionLong:  "The perfect blend of Washington apples.",
-		PricePerLiter:    0.89,
-		PricePer10Liter:  0.85,
+		PricePerLitre:    0.89,
+		PricePer10Litre:  0.85,
 		Origin:           "Ohio",
 		IsOrganic:        true,
 		ImageUrl:         "apple.png",
@@ -55,8 +55,8 @@ func MakeWatermelonJuiceProduct() Product {
 		Name:             "Watermelon Juice",
 		DescriptionShort: "From sun-drenched fields in Florida.",
 		DescriptionLong:  "From sun-drenched fields in Florida.",
-		PricePerLiter:    3.99,
-		PricePer10Liter:  3.84,
+		PricePerLitre:    3.99,
+		PricePer10Litre:  3.84,
 		Origin:           "Florida",
 		IsOrganic:        true,
 		ImageUrl:         "watermelon.png",
@@ -71,8 +71,8 @@ func MakeKiwiJuiceProduct() Product {
 		Name:             "Kiwi Juice",
 		DescriptionShort: "California sunshine and rain distilled into sweet goodness",
 		DescriptionLong:  "California sunshine and rain distilled into sweet goodness",
-		PricePerLiter:    5.99,
-		PricePer10Liter:  5.54,
+		PricePerLitre:    5.99,
+		PricePer10Litre:  5.54,
 		Origin:           "California",
 		IsOrganic:        false,
 		ImageUrl:         "kiwi.png",
@@ -87,8 +87,8 @@ func MakeMangosteenJuiceProduct() Product {
 		Name:             "Mangosteen Juice",
 		DescriptionShort: "Our latest taste sensation, imported directly from Hawaii",
 		DescriptionLong:  "Our latest taste sensation, imported directly from Hawaii",
-		PricePerLiter:    6.87,
-		PricePer10Liter:  6.79,
+		PricePerLitre:    6.87,
+		PricePer10Litre:  6.79,
 		Origin:           "Hawaii",
 		IsOrganic:        false,
 		ImageUrl:         "mangosteen.png",
@@ -103,8 +103,8 @@ func MakeOrangeJuiceProduct() Product {
 		Name:             "Orange Juice",
 		DescriptionShort: "Fresh squeezed from Florida's best oranges.",
 		DescriptionLong:  "Fresh squeezed from Florida's best oranges.",
-		PricePerLiter:    1.67,
-		PricePer10Liter:  1.63,
+		PricePerLitre:    1.67,
+		PricePer10Litre:  1.63,
 		Origin:           "Florida",
 		IsOrganic:        false,
 		ImageUrl:         "orange.png",
@@ -119,8 +119,8 @@ func MakePineappleJuiceProduct() Product {
 		Name:             "Pineapple Juice",
 		DescriptionShort: "An exotic and refreshing offering. Straight from Hawaii.",
 		DescriptionLong:  "An exotic and refreshing offering. Straight from Hawaii.",
-		PricePerLiter:    2.48,
-		PricePer10Liter:  2.27,
+		PricePerLitre:    2.48,
+		PricePer10Litre:  2.27,
 		Origin:           "Hawaii",
 		IsOrganic:        false,
 		ImageUrl:         "pineapple.png",
@@ -135,8 +135,8 @@ func MakeStrawberryJuiceProduct() Product {
 		Name:             "Strawberry Juice",
 		DescriptionShort: "MThe perfect balance of sweet and tart.",
 		DescriptionLong:  "The perfect balance of sweet and tart.",
-		PricePerLiter:    4.36,
-		PricePer10Liter:  4.27,
+		PricePerLitre:    4.36,
+		PricePer10Litre:  4.27,
 		Origin:           "California",
 		IsOrganic:        false,
 		ImageUrl:         "strawberry.png",
