@@ -96,8 +96,6 @@ func main() {
 	// add file to history
 	history.Visited = append(history.Visited, chosenFile)
 
-	historyFile.Close()
-
 	if historyFile, err = os.Create(historyFileName); err != nil {
 		fmt.Println("error (re)creating history file:", err)
 		return
