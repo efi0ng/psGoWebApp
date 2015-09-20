@@ -2,16 +2,16 @@ package controllers
 
 import (
 	"bufio"
+	"github.com/gorilla/mux"
 	"net/http"
 	"os"
 	"strings"
 	"text/template"
-	"github.com/gorilla/mux"
 )
 
 func Register(templates *template.Template) {
 	router := mux.NewRouter()
-	
+
 	// handle templates
 	hc := new(homeController)
 	hc.template = templates.Lookup("home.html")
@@ -21,12 +21,12 @@ func Register(templates *template.Template) {
 	cc.template = templates.Lookup("categories.html")
 	router.HandleFunc("/categories", cc.get)
 
-	pc := new(productsController)
-	pc.template = templates.Lookup("products.html")
-	router.HandleFunc("/products", pc.get)
-	
-	http.Handle("/",router)
-	
+	catController := new(categoryController)
+	catController.template = templates.Lookup("products.html")
+	router.HandleFunc("/categories/{id}", catController.get)
+
+	http.Handle("/", router)
+
 	// handle resources
 	http.HandleFunc("/img/", serveResource)
 	http.HandleFunc("/css/", serveResource)
@@ -61,4 +61,3 @@ func serveResource(w http.ResponseWriter, req *http.Request) {
 	br := bufio.NewReader(f)
 	br.WriteTo(w)
 }
-
