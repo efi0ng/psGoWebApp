@@ -101,8 +101,14 @@ func main() {
 		return
 	}
 	defer historyFile.Close()
-	enc := json.NewEncoder(historyFile)
-	enc.Encode(&history)
+
+	enc, err := json.MarshalIndent(&history, "", "\t")
+	if err != nil {
+		fmt.Println("error formatting history:", err)
+		return
+	}
+
+	historyFile.Write(enc)
 	return
 }
 
