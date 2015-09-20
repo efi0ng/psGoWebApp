@@ -13,6 +13,14 @@ func Register(templates *template.Template) {
 	hc := new(homeController)
 	hc.template = templates.Lookup("home.html")
 	http.HandleFunc("/home", hc.get)
+
+	cc := new(categoriesController)
+	cc.template = templates.Lookup("categories.html")
+	http.HandleFunc("/categories", cc.get)
+
+	pc := new(productsController)
+	pc.template = templates.Lookup("products.html")
+	http.HandleFunc("/products", pc.get)
 	
 	// handle resources
 	http.HandleFunc("/img/", serveResource)
