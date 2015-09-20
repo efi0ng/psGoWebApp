@@ -6,36 +6,14 @@ import (
 	"os"
 	"strings"
 	"text/template"
-	"viewmodels"
 )
 
 func Register(templates *template.Template) {
 	// handle templates
-	http.HandleFunc("/",
-		func(w http.ResponseWriter, req *http.Request) {
-			requestedFile := req.URL.Path[1:]
-			template := templates.Lookup(requestedFile + ".html")
-
-			var context interface{} = nil
-
-			switch requestedFile {
-			case "home":
-				context = viewmodels.GetHome()
-			case "categories":
-				context = viewmodels.GetCategories()
-			case "products":
-				context = viewmodels.GetProducts()	
-			case "product":
-				context = viewmodels.GetProduct()
-			}
-
-			if template != nil {
-				template.Execute(w, context)
-			} else {
-				w.WriteHeader(404)
-			}
-		})
-
+	hc := new(homeController)
+	hc.template = templates.Lookup("home.html")
+	http.HandleFunc("/home", hc.get)
+	
 	// handle resources
 	http.HandleFunc("/img/", serveResource)
 	http.HandleFunc("/css/", serveResource)
