@@ -6,7 +6,7 @@ http://www.pluralsight.com/courses/creating-web-applications-go
 
 Reminding myself how to use Git and Github at the same time.
 
-# Known Issues during Module 5: MVC The View Layer
+# Known Issues during Module 5: MVC The Controller Layer - Part 1
 
  1. All data is hard-coded.
  2. Product view model is not parameterised - only one product ever shown
