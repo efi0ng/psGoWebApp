@@ -93,23 +93,7 @@ func main() {
 		return
 	}
 
-	// add file to history
-	history.Visited = append(history.Visited, chosenFile)
-
-	if historyFile, err = os.Create(historyFileName); err != nil {
-		fmt.Println("error (re)creating history file:", err)
-		return
-	}
-	defer historyFile.Close()
-
-	enc, err := json.MarshalIndent(&history, "", "\t")
-	if err != nil {
-		fmt.Println("error formatting history:", err)
-		return
-	}
-
-	historyFile.Write(enc)
-	return
+	updateHistory(history, chosenFile)
 }
 
 func buildFilterChain(options Options, history History) chan MatchedFile {
@@ -212,6 +196,30 @@ func filterFilesByDate(in chan MatchedFile, minDaysOld int, maxDaysOld int, out 
 	out <- endOfStream
 }
 
+// updateHistory writes the history back to disk including chosenFile.
+func updateHistory(history History, chosenFile string) {
+	var historyFile *os.File
+	var err error
+
+	history.Visited = append(history.Visited, chosenFile)
+
+	if historyFile, err = os.Create(historyFileName); err != nil {
+		fmt.Println("error (re)creating history file:", err)
+		return
+	}
+	defer historyFile.Close()
+
+	enc, err := json.MarshalIndent(&history, "", "\t")
+	if err != nil {
+		fmt.Println("error formatting history:", err)
+		return
+	}
+
+	historyFile.Write(enc)
+}
+
+// walkFiles walks all the files in the current directory and subdirectories,
+// outputting files of the correct type to the out channel.
 func walkFiles(dir string, out chan MatchedFile) {
 	filepath.Walk(dir, func(path string, info os.FileInfo, innerErr error) error {
 		if innerErr != nil {
