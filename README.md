@@ -11,4 +11,7 @@ Reminding myself how to use Git and Github at the same time.
  1. All data is hard-coded.
  2. Product view model is not parameterised - only one product ever shown
 
+# Observations about Go
+
+The name of the source file has no bearing on how the contents is referred to in other source files. Any public methods will be visible to a consumer once the package is imported.
 
