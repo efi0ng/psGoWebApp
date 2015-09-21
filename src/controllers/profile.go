@@ -16,6 +16,15 @@ func (this *profileController) handle(w http.ResponseWriter, req *http.Request) 
 	defer responseWriter.Close()
 	
 	vm := viewmodels.GetProfile()
+	if req.Method == "POST" {
+		vm.User.Email = req.FormValue("email")
+		vm.User.FirstName = req.FormValue("firstName")
+		vm.User.LastName = req.FormValue("lastName")
+		vm.User.Stand.Address = req.FormValue("standAddress")
+		vm.User.Stand.City = req.FormValue("standCity")
+		vm.User.Stand.County = req.FormValue("standCounty")
+		vm.User.Stand.Postcode = req.FormValue("standPostcode")
+	}
 	responseWriter.Header().Add("Content-Type", "text/html")
 	this.template.Execute(responseWriter, vm)
 }
