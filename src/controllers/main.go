@@ -30,6 +30,10 @@ func Register(templates *template.Template) {
 	pcController.template = templates.Lookup("product.html")
 	router.HandleFunc("/product/{id}", pcController.get)
 
+	profileController := new(profileController)
+	profileController.template = templates.Lookup("profile.html")
+	router.HandleFunc("/profile", profileController.handle)
+	
 	http.Handle("/", router)
 
 	// handle resources

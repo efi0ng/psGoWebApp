@@ -6,7 +6,7 @@ http://www.pluralsight.com/courses/creating-web-applications-go
 
 Reminding myself how to use Git and Github at the same time.
 
-## Known Issues after Module 5: MVC The Controller Layer - Part 1
+## Known Issues during Module 6: MVC The Controller Layer - Part 2
 
  1. All data is hard-coded.
  2. Only one category (Juices) has been implemented.
