@@ -1,6 +1,8 @@
 package main
 
-// Directory sweeper
+// Vid Picker
+// TODO: Make case insensitive
+// TODO: Add history review interface?
 import (
 	"encoding/json"
 	"flag"
