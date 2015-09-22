@@ -3,6 +3,7 @@ package main
 // Vid Picker
 // TODO: Make case insensitive
 // TODO: Add history review interface?
+// TODO: Add date to history
 import (
 	"encoding/json"
 	"flag"
