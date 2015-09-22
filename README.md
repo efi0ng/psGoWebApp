@@ -10,7 +10,7 @@ Reminding myself how to use Git and Github at the same time.
 
  1. All data is hard-coded.
  2. Only one category (Juices) has been implemented.
- 3. GZip compression is active but both Chrome and Firefox claim it's not working.
+ 3. Stand_locator doesn't implement the postcode finder. Just returns hardcoded data.
 
 ## Observations about Go
 
