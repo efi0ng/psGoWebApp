@@ -30,11 +30,13 @@ type Options struct {
 	MaxDaysOld     int
 	MinDaysOld     int
 	ListFilesFound bool
+	ShowVersion    bool
 }
 
 const (
-	player          = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
-	historyFileName = "vidpicker.history"
+	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
+	historyFileName  = "vidpicker.history"
+	vidPickerVersion = "1.0.150923.0"
 )
 
 var (
@@ -45,6 +47,11 @@ var (
 func main() {
 	options := processArgs()
 	history := History{}
+
+	if options.ShowVersion {
+		fmt.Println("VidPicker version ", vidPickerVersion)
+		return
+	}
 
 	// do we have a history? If so, read it
 	historyFile, err := os.Open(historyFileName)
@@ -140,6 +147,7 @@ func processArgs() Options {
 	maxDaysOld := flag.Int("o", 0, "Oldest modified file to consider (days)")
 	minDaysOld := flag.Int("n", 0, "Newest modified file to consider (days)")
 	printFound := flag.Bool("l", false, "List files found")
+	version := flag.Bool("v", false, "Show version information")
 
 	flag.Parse()
 
@@ -157,6 +165,7 @@ func processArgs() Options {
 	options.MaxDaysOld = *maxDaysOld
 	options.MinDaysOld = *minDaysOld
 	options.ListFilesFound = *printFound
+	options.ShowVersion = *version
 
 	return options
 }
@@ -173,7 +182,7 @@ func filterByHistory(in chan MatchedFile, history History, out chan MatchedFile)
 
 func filterFilesByPattern(in chan MatchedFile, pattern string, out chan MatchedFile) {
 	for file := <-in; file != endOfStream; file = <-in {
-		name := filepath.Base(file.Name)
+		name := strings.ToLower(filepath.Base(file.Name))
 		if matched, _ := filepath.Match(pattern, name); matched {
 			out <- file
 		}
