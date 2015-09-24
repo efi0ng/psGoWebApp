@@ -19,8 +19,10 @@ func (this *categoriesController) get(w http.ResponseWriter, req *http.Request) 
 	categories := models.GetCategories()
 	
 	categoriesVM := []viewmodels.Category{}
+	isOrientRight := false
 	for _, category := range categories {
-		categoriesVM = append(categoriesVM, converters.ConvertCategoryToViewModel(category))
+		categoriesVM = append(categoriesVM, converters.ConvertCategoryToViewModel(category, isOrientRight))
+		isOrientRight = !isOrientRight
 	}
 	vm := viewmodels.GetCategories()
 	vm.Categories = categoriesVM

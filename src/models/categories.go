@@ -6,7 +6,6 @@ type Category struct {
 	imageUrl      string
 	title         string
 	description   string
-	isOrientRight bool
 	id            int
 }
 
@@ -20,10 +19,6 @@ func (this *Category) Title() string {
 
 func (this *Category) Description() string {
 	return this.description
-}
-
-func (this *Category) IsOrientRight() bool {
-	return this.isOrientRight
 }
 
 func (this *Category) Id() int {
@@ -42,10 +37,6 @@ func (this *Category) SetDescription(value string) {
 	this.description = value
 }
 
-func (this *Category) SetIsOrientRight(value bool) {
-	this.isOrientRight = value
-}
-
 func (this *Category) SetId(value int) {
 	this.id = value
 }
@@ -61,7 +52,6 @@ func GetCategories() []Category {
 							organic juices that are guaranteed to be obtained from trees that
 							have never been treated with pesticides or artificial
 							fertilizers.`,
-			isOrientRight: false,
 		},
 		Category{
 			id:       2,
@@ -70,7 +60,6 @@ func GetCategories() []Category {
 			description: `From paper cups to bio-degradable plastic to straws and
 						napkins, LSS is your source for the sundries that keep your stand
 						running smoothly.`,
-			isOrientRight: true,
 		},
 		Category{
 			id:       3,
@@ -79,7 +68,6 @@ func GetCategories() []Category {
 			description: `Sure, you could just wait for people to find your stand
 						along the side of the road, but if you want to take it to the next
 						level, our premium line of advertising supplies.`,
-			isOrientRight: false,
 		}}
 	return result
 }
