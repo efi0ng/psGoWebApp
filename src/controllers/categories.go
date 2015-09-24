@@ -17,7 +17,7 @@ type categoriesController struct {
 
 func (this *categoriesController) get(w http.ResponseWriter, req *http.Request) {
 	categories := models.GetCategories()
-	
+
 	categoriesVM := []viewmodels.Category{}
 	isOrientRight := false
 	for _, category := range categories {
@@ -26,7 +26,7 @@ func (this *categoriesController) get(w http.ResponseWriter, req *http.Request) 
 	}
 	vm := viewmodels.GetCategories()
 	vm.Categories = categoriesVM
-	
+
 	w.Header().Add("Content-Type", "text/html")
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
