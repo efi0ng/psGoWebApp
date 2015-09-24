@@ -36,7 +36,7 @@ type Options struct {
 const (
 	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.150923.0"
+	vidPickerVersion = "1.0.150923.1"
 )
 
 var (
@@ -154,7 +154,7 @@ func processArgs() Options {
 	if flag.NArg() < 1 {
 		options.Pattern = "*"
 	} else {
-		pattern := flag.Arg(0)
+		pattern := strings.ToLower(flag.Arg(0))
 
 		if !strings.Contains(pattern, "*") {
 			pattern = "*" + pattern + "*"
