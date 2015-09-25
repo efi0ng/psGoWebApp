@@ -6,13 +6,14 @@ http://www.pluralsight.com/courses/creating-web-applications-go
 
 Reminding myself how to use Git and Github at the same time.
 
-## Known Issues during Module 7: MVC The Model Layer
+## Known Issues after Module 7: MVC The Model Layer
 
  1. All data is hard-coded.
  2. Only one category (Juices) has been implemented.
  3. Stand_locator doesn't implement the postcode finder. Just returns hardcoded data.
  4. Only category has implemented the model layer.
  5. Category controller seems to have a lot of knowledge about the viewmodel. Makes the viewmodel redundant? Worth reanalysis.
+ 6. Tests only added for two types.
  
 ## Observations about Go
 
