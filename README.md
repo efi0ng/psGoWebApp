@@ -11,12 +11,13 @@ Reminding myself how to use Git and Github at the same time.
  1. All data is hard-coded.
  2. Only one category (Juices) has been implemented.
  3. Stand_locator doesn't implement the postcode finder. Just returns hardcoded data.
- 4. Only category has implemented the model layer.
- 5. Category controller seems to have a lot of knowledge about the viewmodel. Makes the viewmodel redundant? Worth reanalysis.
- 6. Tests only added for two types.
+ 6. Tests only added for a few types.
  
-## Observations about Go
+## Observations from this learning project
 
 The name of the source file has no bearing on how the contents is referred to in other source files. Any public methods will be visible to a consumer once the package is imported.
 
-I need to read up on function casting to understand difference between func (this \*struct) and func (this type).
+Need to read up on function casting to understand difference between func (this \*struct) and func (this type).
+
+MVC has proven hard to follow in this project. Naming conventions (matching  concepts have the same name in model/package/controller/converter folders) may be a large part of the issue.
+ 

@@ -48,7 +48,19 @@ func (this *categoryController) get(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	vm := viewmodels.GetProducts(id)
+	category, err := models.GetCategoryById(id)
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	vm := viewmodels.GetCategoryPage(category.Title())
+	productVMs := []viewmodels.Product{}
+
+	for _, product := range category.Products() {
+		productVMs = append(productVMs, converters.ConvertProductToViewModel(product))
+	}
+	vm.Products = productVMs
 
 	w.Header().Add("Content-Type", "text/html")
 	responseWriter := util.GetResponseWriter(w, req)

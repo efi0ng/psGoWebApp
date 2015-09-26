@@ -1,12 +1,15 @@
 package models
 
-import ()
+import (
+	"errors"
+)
 
 type Category struct {
-	imageUrl      string
-	title         string
-	description   string
-	id            int
+	imageUrl    string
+	title       string
+	description string
+	id          int
+	products    []Product
 }
 
 func (this *Category) ImageUrl() string {
@@ -25,6 +28,10 @@ func (this *Category) Id() int {
 	return this.id
 }
 
+func (this *Category) Products() []Product {
+	return this.products
+}
+
 func (this *Category) SetImageUrl(value string) {
 	this.imageUrl = value
 }
@@ -41,6 +48,10 @@ func (this *Category) SetId(value int) {
 	this.id = value
 }
 
+func (this *Category) SetProducts(value []Product) {
+	this.products = value
+}
+
 func GetCategories() []Category {
 	result := []Category{
 		Category{
@@ -52,6 +63,7 @@ func GetCategories() []Category {
 							organic juices that are guaranteed to be obtained from trees that
 							have never been treated with pesticides or artificial
 							fertilizers.`,
+			products: getJuiceProducts(),
 		},
 		Category{
 			id:       2,
@@ -70,4 +82,14 @@ func GetCategories() []Category {
 						level, our premium line of advertising supplies.`,
 		}}
 	return result
+}
+
+func GetCategoryById(id int) (Category, error) {
+	for _, category := range GetCategories() {
+		if category.Id() == id {
+			return category, nil
+		}
+	}
+
+	return Category{}, errors.New("Category Not Found")
 }

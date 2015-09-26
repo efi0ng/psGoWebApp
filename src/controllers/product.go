@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"models"
 	"controllers/util"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"text/template"
 	"viewmodels"
+	"converters"
 )
 
 type productController struct {
@@ -23,7 +25,7 @@ func (this *productController) get(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	vm, err := viewmodels.GetProduct(id)
+	product, err := models.GetProductById(id)
 
 	if err != nil {
 		w.WriteHeader(404)
@@ -34,5 +36,7 @@ func (this *productController) get(w http.ResponseWriter, req *http.Request) {
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
 
+	vm := viewmodels.GetProductPage(product.Name())
+	vm.Product = converters.ConvertProductToViewModel(product)
 	this.template.Execute(responseWriter, vm)
 }
