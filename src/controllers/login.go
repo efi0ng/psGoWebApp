@@ -7,15 +7,15 @@ import (
 	"viewmodels"
 )
 
-type homeController struct {
+type loginController struct {
 	template *template.Template
 }
 
-func (this *homeController) get(w http.ResponseWriter, req *http.Request) {
+func (this *loginController) login(w http.ResponseWriter, req *http.Request) {	
 	w.Header().Add("Content-Type", "text/html")
 	responseWriter := util.GetResponseWriter(w, req)
 	defer responseWriter.Close()
-
-	vm := viewmodels.GetHome()
+	
+	vm := viewmodels.GetLogin()
 	this.template.Execute(responseWriter, vm)
 }

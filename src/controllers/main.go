@@ -16,9 +16,12 @@ func Register(templates *template.Template) {
 	// handle templates
 	hc := new(homeController)
 	hc.template = templates.Lookup("home.html")
-	hc.loginTemplate = templates.Lookup("login.html")
 	router.HandleFunc("/home", hc.get)
-	router.HandleFunc("/login", hc.login)
+	router.HandleFunc("/", hc.get)
+	
+	lc := new(loginController)
+	lc.template = templates.Lookup("login.html")
+	router.HandleFunc("/login", lc.login)
 	
 	cc := new(categoriesController)
 	cc.template = templates.Lookup("categories.html")
