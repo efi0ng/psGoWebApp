@@ -16,8 +16,10 @@ func Register(templates *template.Template) {
 	// handle templates
 	hc := new(homeController)
 	hc.template = templates.Lookup("home.html")
+	hc.loginTemplate = templates.Lookup("login.html")
 	router.HandleFunc("/home", hc.get)
-
+	router.HandleFunc("/login", hc.login)
+	
 	cc := new(categoriesController)
 	cc.template = templates.Lookup("categories.html")
 	router.HandleFunc("/categories", cc.get)
@@ -38,6 +40,7 @@ func Register(templates *template.Template) {
 	standLocatorController.template = templates.Lookup("stand_locator.html")
 	router.HandleFunc("/stand_locator", standLocatorController.get)
 	router.HandleFunc("/api/stand_locator", standLocatorController.apiSearch)
+	
 	
 	http.Handle("/", router)
 
