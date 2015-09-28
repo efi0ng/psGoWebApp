@@ -25,7 +25,9 @@ MVC has proven hard to follow in this project. Naming conventions (matching  con
 
 SQLite go library chosen: https://github.com/mattn/go-sqlite3
 
-64-bit MINGW build that actually worked with CGO was here: http://sourceforge.net/projects/mingwbuilds/?source=typ_redirect
+64-bit MINGW build that worked with CGO here:
+ * http://sourceforge.net/projects/mingwbuilds/ and also here
+ * http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.2.0/threads-win32/seh/
 
 SQLite manager recommendation: http://stackoverflow.com/questions/835069/which-sqlite-administration-console-do-you-recommend 
 
