@@ -15,6 +15,8 @@ Reminding myself how to use Git and Github at the same time.
  
 ## Observations from this learning project
 
+GOPATH: seems good practice to have a library folder as the first element of the path then your current project. Any packages that are downloaded then go to the lib and are compiled for your platform, out of the way of your current project. Possibly this strength could be a downside i.e. you have all packages globally on your machine and not specific to project(s) that need them.
+
 The name of the source file has no bearing on how the contents is referred to in other source files. Any public methods will be visible to a consumer once the package is imported.
 
 Thanks to http://nathanleclaire.com/blog/2014/08/09/dont-get-bitten-by-pointer-vs-non-pointer-method-receivers-in-golang/, I understand the reason for **func (this \*struct) Fn()** + **func (this type) Fn()** and when to chose between them. Hoorah!
