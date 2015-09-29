@@ -21,7 +21,14 @@ func (this *loginController) login(w http.ResponseWriter, req *http.Request) {
 		email := req.FormValue("email")
 		password := req.FormValue("password")
 
-		_, _ = models.GetMember(email, password)
+		member, err := models.GetMember(email, password)
+		if err != nil {
+			responseWriter.Write([]byte(err.Error()))
+			return
+		}
+		
+		responseWriter.Write([]byte("Hey! Found you " + member.FirstName()))
+		return
 	}
 	vm := viewmodels.GetLogin()
 	this.template.Execute(responseWriter, vm)
