@@ -27,8 +27,16 @@ func (this *loginController) login(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		
-		responseWriter.Write([]byte("Hey! Found you " + member.FirstName()))
-		return
+		session, err := models.CreateSession(member)
+		if err != nil {
+			responseWriter.Write([]byte(err.Error()))
+			return			
+		}
+		
+		var cookie http.Cookie
+		cookie.Name = "sessionId"
+		cookie.Value = session.SessionId()
+		responseWriter.Header().Add("Set-Cookie", cookie.String())
 	}
 	vm := viewmodels.GetLogin()
 	this.template.Execute(responseWriter, vm)

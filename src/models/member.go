@@ -67,3 +67,4 @@ func GetMember(email string, password string) (Member, error) {
 	
 	return result, nil
 }
+

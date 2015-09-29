@@ -6,7 +6,7 @@ http://www.pluralsight.com/courses/creating-web-applications-go
 
 Reminding myself how to use Git and Github at the same time.
 
-## Known Issues during Module 8: Persisting Data
+## Known Issues after Module 8: Persisting Data
 
  1. All data is hard-coded.
  2. Only one category (Juices) has been implemented.
@@ -21,7 +21,7 @@ The name of the source file has no bearing on how the contents is referred to in
 
 Thanks to http://nathanleclaire.com/blog/2014/08/09/dont-get-bitten-by-pointer-vs-non-pointer-method-receivers-in-golang/, I understand the reason for **func (this \*struct) Fn()** + **func (this type) Fn()** and when to chose between them. Hoorah!
 
-MVC has proven hard to follow in this project. Naming conventions (matching  concepts have the same name in model/package/controller/converter folders) may be a large part of the issue.
+MVC has proven hard to follow in this project. Naming conventions (matching  concepts have the same name in model/package/controller/converter folders) seemed to be a large part of the issue.
 
 ### SQL Lite
 
