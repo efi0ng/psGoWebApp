@@ -31,6 +31,7 @@ type Options struct {
 	MinDaysOld     int
 	ListFilesFound bool
 	ShowVersion    bool
+	Prune          bool
 }
 
 const (
@@ -153,6 +154,7 @@ func processArgs() Options {
 	minDaysOld := flag.Int("n", 0, "Newest modified file to consider (days)")
 	printFound := flag.Bool("l", false, "List files found")
 	version := flag.Bool("v", false, "Show version information")
+	prune := flag.Bool("p", false, "Prune history of missing files")
 
 	flag.Parse()
 
@@ -171,6 +173,7 @@ func processArgs() Options {
 	options.MinDaysOld = *minDaysOld
 	options.ListFilesFound = *printFound
 	options.ShowVersion = *version
+	options.Prune = *prune
 
 	return options
 }
