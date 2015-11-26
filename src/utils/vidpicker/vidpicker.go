@@ -36,7 +36,7 @@ type Options struct {
 const (
 	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.150923.1"
+	vidPickerVersion = "1.0.151126.0"
 )
 
 var (
@@ -46,12 +46,17 @@ var (
 
 func main() {
 	options := processArgs()
-	history := History{}
 
 	if options.ShowVersion {
 		fmt.Println("VidPicker version ", vidPickerVersion)
 		return
 	}
+
+	pickVideo(options)
+}
+
+func pickVideo(options Options) {
+	history := History{}
 
 	// do we have a history? If so, read it
 	historyFile, err := os.Open(historyFileName)
