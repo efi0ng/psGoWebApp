@@ -37,7 +37,7 @@ type Options struct {
 const (
 	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.151126.0"
+	vidPickerVersion = "1.0.151126.1"
 )
 
 var (
@@ -57,23 +57,11 @@ func main() {
 }
 
 func pickVideo(options Options) {
-	history := History{}
-
-	// do we have a history? If so, read it
-	historyFile, err := os.Open(historyFileName)
-	if err == nil {
-		// got history
-		dec := json.NewDecoder(historyFile)
-		err = dec.Decode(&history)
-
-		// close history file now cos we're gonna write to it later
-		historyFile.Close()
-
-		if err != nil {
-			fmt.Println("error reading history file:", err)
-			// stop now before we lose the history
-			return
-		}
+	history, err := readHistory()
+	if err != nil {
+		fmt.Println("error reading history file:", err)
+		// stop now before we lose the history
+		return
 	}
 
 	// build filter chain that will find the files
@@ -109,7 +97,9 @@ func pickVideo(options Options) {
 		return
 	}
 
-	updateHistory(history, chosenFile)
+	addFileToHistory(&history, chosenFile)
+
+	writeHistory(history)
 }
 
 func buildFilterChain(options Options, history History) chan MatchedFile {
@@ -216,12 +206,33 @@ func filterFilesByDate(in chan MatchedFile, minDaysOld int, maxDaysOld int, out 
 	out <- endOfStream
 }
 
-// updateHistory writes the history back to disk including chosenFile.
-func updateHistory(history History, chosenFile string) {
+func readHistory() (History, error) {
+	history := History{}
+
+	// do we have a history? If so, read it
+	historyFile, err := os.Open(historyFileName)
+	if os.IsNotExist(err) {
+		// we're ok with file not existing.
+		err = nil
+	} else if err == nil {
+		// got history
+		dec := json.NewDecoder(historyFile)
+		err = dec.Decode(&history)
+
+		// close history file now cos we're gonna write to it later
+		historyFile.Close()
+	}
+
+	return history, err
+}
+
+func addFileToHistory(history *History, file string) {
+	history.Visited = append(history.Visited, file)
+}
+
+func writeHistory(history History) {
 	var historyFile *os.File
 	var err error
-
-	history.Visited = append(history.Visited, chosenFile)
 
 	if historyFile, err = os.Create(historyFileName); err != nil {
 		fmt.Println("error (re)creating history file:", err)

@@ -1,0 +1,21 @@
+# Go gitgnore file
+# for inspiration see: https://github.com/github/gitignore/blob/master/Go.gitignore
+
+# Compiled object files, static and dynamic libs (shared objets)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+
+# Architecture specific extensions and prefixes
+*.*~
+Thumbs.db
+
+# Project specific temporary files
+vidpicker.history
+*.mp4
+*.exe
