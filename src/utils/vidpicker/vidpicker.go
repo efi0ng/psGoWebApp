@@ -37,7 +37,7 @@ type Options struct {
 const (
 	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.151126.1"
+	vidPickerVersion = "1.0.160509.0"
 )
 
 var (
@@ -53,19 +53,27 @@ func main() {
 		return
 	}
 
-	pickVideo(options)
-}
+	sharedHistory, err := readHistory(historyFileName)
 
-func pickVideo(options Options) {
-	history, err := readHistory()
 	if err != nil {
 		fmt.Println("error reading history file:", err)
 		// stop now before we lose the history
 		return
 	}
 
+	if options.Prune {
+		sharedHistory = pruneHistory(sharedHistory)
+	} else {
+		pickVideo(options, &sharedHistory)
+	}
+
+	writeHistory(sharedHistory, historyFileName)
+}
+
+func pickVideo(options Options, historyPtr *History) {
+
 	// build filter chain that will find the files
-	outChan := buildFilterChain(options, history)
+	outChan := buildFilterChain(options, *historyPtr)
 
 	// collect results
 	selection := []string{}
@@ -91,15 +99,13 @@ func pickVideo(options Options) {
 	fmt.Println("\nChose: ", chosenFile)
 
 	cmd := exec.Command(player, chosenFile)
-	err = cmd.Start()
+	err := cmd.Start()
 	if err != nil {
 		fmt.Println("error starting vidplayer:", err)
 		return
 	}
 
-	addFileToHistory(&history, chosenFile)
-
-	writeHistory(history)
+	addFileToHistory(historyPtr, chosenFile)
 }
 
 func buildFilterChain(options Options, history History) chan MatchedFile {
@@ -206,11 +212,11 @@ func filterFilesByDate(in chan MatchedFile, minDaysOld int, maxDaysOld int, out 
 	out <- endOfStream
 }
 
-func readHistory() (History, error) {
+func readHistory(fileName string) (History, error) {
 	history := History{}
 
 	// do we have a history? If so, read it
-	historyFile, err := os.Open(historyFileName)
+	historyFile, err := os.Open(fileName)
 	if os.IsNotExist(err) {
 		// we're ok with file not existing.
 		err = nil
@@ -226,15 +232,27 @@ func readHistory() (History, error) {
 	return history, err
 }
 
-func addFileToHistory(history *History, file string) {
-	history.Visited = append(history.Visited, file)
+func pruneHistory(history History) History {
+	newHistory := History{}
+
+	for _, fileName := range history.Visited {
+		if _, err := os.Stat(fileName); err == nil {
+			addFileToHistory(&newHistory, fileName)
+		}
+	}
+
+	return newHistory
 }
 
-func writeHistory(history History) {
+func addFileToHistory(historyPtr *History, fileName string) {
+	historyPtr.Visited = append(historyPtr.Visited, fileName)
+}
+
+func writeHistory(history History, fileName string) {
 	var historyFile *os.File
 	var err error
 
-	if historyFile, err = os.Create(historyFileName); err != nil {
+	if historyFile, err = os.Create(fileName); err != nil {
 		fmt.Println("error (re)creating history file:", err)
 		return
 	}
