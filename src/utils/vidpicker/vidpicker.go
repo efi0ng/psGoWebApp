@@ -32,12 +32,18 @@ type Options struct {
 	ListFilesFound bool
 	ShowVersion    bool
 	Prune          bool
+	Json           bool
+}
+
+type SearchResult struct {
+	Matches    int    `json:"matches"`
+	ChosenFile string `json:"chosenFile"`
 }
 
 const (
 	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.160509.0"
+	vidPickerVersion = "1.0.160820.0"
 )
 
 var (
@@ -56,7 +62,7 @@ func main() {
 	sharedHistory, err := readHistory(historyFileName)
 
 	if err != nil {
-		fmt.Println("error reading history file:", err)
+		fmt.Fprintln(os.Stderr, "error reading history file:", err)
 		// stop now before we lose the history
 		return
 	}
@@ -87,7 +93,9 @@ func pickVideo(options Options, historyPtr *History) {
 	}
 
 	numFiles := len(selection)
-	fmt.Println("\n", numFiles, "files found.")
+	if !options.Json {
+		fmt.Println("\n", numFiles, "files found.")
+	}
 
 	if numFiles == 0 {
 		return
@@ -96,16 +104,31 @@ func pickVideo(options Options, historyPtr *History) {
 	rand.Seed(time.Now().UnixNano())
 	chosenIndex := rand.Intn(numFiles)
 	chosenFile := selection[chosenIndex]
-	fmt.Println("\nChose: ", chosenFile)
+	if !options.Json {
+		fmt.Println("\nChose: ", chosenFile)
+	}
 
 	cmd := exec.Command(player, chosenFile)
 	err := cmd.Start()
 	if err != nil {
-		fmt.Println("error starting vidplayer:", err)
+		fmt.Fprintln(os.Stderr, "error starting vidplayer:", err)
 		return
 	}
 
 	addFileToHistory(historyPtr, chosenFile)
+
+	if options.Json {
+		result := SearchResult{}
+		result.ChosenFile = chosenFile
+		result.Matches = numFiles
+
+		bytes, err := json.Marshal(result)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error encoding JSon:", err)
+			return
+		}
+		os.Stdout.Write(bytes)
+	}
 }
 
 func buildFilterChain(options Options, history History) chan MatchedFile {
@@ -151,6 +174,7 @@ func processArgs() Options {
 	printFound := flag.Bool("l", false, "List files found")
 	version := flag.Bool("v", false, "Show version information")
 	prune := flag.Bool("p", false, "Prune history of missing files")
+	json := flag.Bool("j", false, "Output JSon format to stdout")
 
 	flag.Parse()
 
@@ -170,6 +194,7 @@ func processArgs() Options {
 	options.ListFilesFound = *printFound
 	options.ShowVersion = *version
 	options.Prune = *prune
+	options.Json = *json
 
 	return options
 }
