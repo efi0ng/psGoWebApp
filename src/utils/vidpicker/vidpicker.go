@@ -41,9 +41,9 @@ type SearchResult struct {
 }
 
 const (
-	player           = "C:/Program Files (x86)/GRETECH/GomPlayer/GOM.exe"
+	player           = "C:/Program Files/Combined Community Codec Pack 64bit/MPC/mpc-hc64.exe"
 	historyFileName  = "vidpicker.history"
-	vidPickerVersion = "1.0.160820.0"
+	vidPickerVersion = "1.0.170324.0"
 )
 
 var (
